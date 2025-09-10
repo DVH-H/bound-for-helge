@@ -237,7 +237,20 @@ body[data-passage="Start"]{
   --bg-image: url("img/wagon.webp");
 }
 body[data-passage="DragonCry"]{
-  --bg-image: url("dragon-attack.jpg");
+  --bg-image: url("img/dragoncry.jpg");
+}
+
+/* === Inline images inside passages === */
+.passage img{
+  display:block;
+  max-width:100%;
+  max-height:240px;   /* keeps it from being overwhelming */
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  border-radius:.75rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  margin:.75rem 0 1rem;
 }
 
 /* === Small screens === */
@@ -543,7 +556,7 @@ Both paths yawn amid the smoke.
   &lt;&lt;note &quot;Path chosen: Go alone&quot;&gt;&gt;
   &lt;&lt;goto &quot;AloneEscape&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;&lt;/if&gt;&gt;
 
-</tw-passagedata><tw-passagedata pid="20" name="AtTheBlock" tags="" position="1700,800" size="100,100">You kneel. The world narrows: wood grain, cold iron, your own pulse.
+&lt;img src=&quot;img/drogoncry.jpg&quot; alt=&quot;Hello world&quot;&gt;</tw-passagedata><tw-passagedata pid="20" name="AtTheBlock" tags="" position="1700,800" size="100,100">You kneel. The world narrows: wood grain, cold iron, your own pulse.
 
 Headsman: “Next prisoner!”
 
