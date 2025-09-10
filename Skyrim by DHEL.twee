@@ -1,0 +1,622 @@
+:: StoryTitle
+Skyrim by DHEL
+
+
+:: StoryData
+{
+  "ifid": "873D36CA-DE57-4C9E-AABE-B3876428CF68",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Start",
+  "zoom": 0.6
+}
+
+
+:: Allegiance {"position":"700,400","size":"100,100"}
+/*
+<<link "Continue">> ... <</link>> lets you run macros after the click.
+<<set>> must be before <<goto>> (last in the block) so your state updates before moving on.
+*/ 
+//Had issues with updating variables but this worked.
+How do you answer Ralof?
+
+- “Stormcloak or not, we’re just prisoners today.” <<link "Continue">>
+  <<set $allegiance = "neutral">>
+  <<goto "WagonsRoll">><</link>>
+ <<note "Allegiance set: Neutral">>
+
+- “The Empire keeps order. Maybe we survive if we don’t provoke them.” <<link "Continue">>
+  <<set $allegiance = "imperial-leaning">>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Allegiance set: Imperial-leaning">>
+  
+- “Ulfric is the true High King.” <<link "Continue">>
+  <<set $allegiance = "stormcloak-leaning">>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Allegiance set: Stormcloak-leaning">>
+
+
+:: AloneEscape {"position":"2000,1200","size":"100,100"}
+Smoke cloaks you as you weave through chaos, neither banner your shelter.
+
+You slip past a toppled cart and into Helgen’s back lanes.
+
+Your solitary path begins.
+
+<<include "Epilogue">>
+
+
+:: AtTheBlock {"position":"1700,800","size":"100,100"}
+You kneel. The world narrows: wood grain, cold iron, your own pulse.
+
+Headsman: “Next prisoner!”
+
+As the axe rises, the air **tears** with a monstrous roar.
+
+[[Look up->DragonCry]]
+
+
+:: AttemptEscape {"position":"1500,400","size":"100,100"}
+You twist your wrists, searching for slack.
+
+<<set _die = random(1,6)>>
+<<set _roll = _die + $bonus>>
+<<set $attempt = "escape">>
+
+<<if _roll >= 6>>
+  <<set $bindings = "loose">>
+  <<note "You rolled " + _die + " + bonus " + $bonus + " = " + _roll + ". Success!">>
+  With a quiet breath, the knot gives a whisper. No one seems to notice—yet.
+  - [[Melt into the crowd’s shadow->SlipAway]]
+  - [[Stay, hands free beneath the cords->Comply]]
+<<else>>
+  <<note "You rolled " + _die + " + bonus " + $bonus + " = " + _roll + ". Failure.">>
+  A jolt of pain—no give. The nearest legionary notices the motion.
+  - [[Play it off and comply->Comply]]
+  - [[Bolt anyway->Bolt]]
+<</if>>
+
+
+:: Bolt {"position":"1900,600","size":"100,100"}
+You run. The square erupts.
+
+<<if $lokir === "steadied">>
+Lokir flinches, then doesn’t follow.
+<</if>>
+<<if $lokir === "panicked">>
+Lokir breaks too, sprinting for the gate ahead of you.
+<</if>>
+
+Arrows hiss overhead as you sprint for cover.
+
+<<set _die = random(1,6)>>
+<<set _runroll = _die + $bonus>>
+
+<<if _runroll >= 6>>
+<<note "You rolled " + _die + ($bonus > 0 ? " + bonus " + $bonus : "") + " = " + _runroll + ". Success!">>
+You weave between crates and fleeing townsfolk. By some miracle, the arrows miss, and you clear the first alley as chaos blooms.  
+[[EdgeOfTown]]
+<<else>>
+<<note "You rolled " + _die + ($bonus > 0 ? " + bonus " + $bonus : "") + " = " + _runroll + ". Failure.">>
+A shaft slams into the post inches from your head—you stumble, heart hammering. Before you can recover, a horn splits the sky.  
+[[DragonCry]]
+<</if>>
+
+
+
+:: Comply {"position":"1700,600","size":"100,100"}
+You step forward when called. Names, ranks, accusations wash over you like sleet.
+
+The square holds its breath.
+
+- [[Face the block->AtTheBlock]]
+- [[Scan the rooftops->DragonSense]]
+
+
+:: DragonCry {"position":"1800,1000","size":"100,100"}
+A shadow swallows the sun. The dragon’s cry shatters stone and courage alike.
+
+Debris rains. Soldiers scatter. Ralof’s shout reaches you through dust: “This way!”
+
+**Your earlier choices change who reaches for you and from where:**
+
+<<if $bindings === "loose">>
+Your hands are free—you can actually move.
+<</if>>
+
+<<if $allegiance === "imperial-leaning">>
+An Imperial beckons from the keep’s door. “With me if you want to live!”
+<</if>>
+
+<<if $allegiance === "stormcloak-leaning">>
+Ralof waves from a collapsing wall. “Over here!”
+<</if>>
+
+<<if $allegiance === "neutral">>
+Both paths yawn amid the smoke.
+<</if>>
+
+- Follow the Imperials <<link "Continue">>
+  <<note "Path chosen: Follow the Imperials">>
+  <<goto "ImperialEscape">><</link>>
+
+- Follow Ralof <<link "Continue">>
+  <<note "Path chosen: Follow the Stormcloaks">>
+  <<goto "StormcloakEscape">><</link>>
+
+- <<if $bindings === "loose">>Go alone <<link "Continue">>
+  <<note "Path chosen: Go alone">>
+  <<goto "AloneEscape">><</link>><</if>>
+
+<img src="img/dragoncry.jpg" alt="Prisoner wagon rolling through snowy mountains">
+
+
+:: DragonSense {"position":"1600,1000","size":"100,100"}
+Something is wrong—the birds are silent. The clouds gather into a spiral.
+
+[[Look up->DragonCry]]
+
+
+:: EdgeOfTown {"position":"2100,600","size":"100,100"}
+You reach the palisade as the square erupts behind you. Screams. Fire. Wings.
+
+You find a postern gate ajar.
+
+You escape Helgen before the worst.
+
+<<include "Epilogue">>
+
+
+:: Epilogue {"position":"1200,200","size":"100,100"}
+<div class="caption">
+Demo complete. Your choices affected:
+<ul>
+<li>Allegiance: <$allegiance></li>
+<li>Lokir’s state: <$lokir></li>
+<li>Blessing: <$blessing> (bonus +<$bonus>)</li>
+<li>Origin: <$origin></li>
+<li>Bindings: <$bindings></li>
+<li>Attempted escape: <$attempt></li>
+</ul>
+</div>
+
+
+:: ImperialEscape {"position":"1600,1200","size":"100,100"}
+You dash for the keep. A centurion grabs your arm and cuts your ropes if any remain.
+
+“Prove you’re not a fool,” she says. “Help get people inside.”
+
+<<if $lokir === "steadied">>
+Lokir stumbles in after you, alive.
+<</if>>
+<<if $lokir === "angry">>
+Lokir hesitates outside. A roar drowns his choice.
+<</if>>
+
+Your path with the Empire begins.
+
+<<include "Epilogue">>
+
+
+:: LokirChoice {"position":"700,600","size":"100,100"}
+/*
+<<link "Continue">> ... <</link>> lets you run macros after the click.
+<<set>> must be before <<goto>> (last in the block) so your state updates before moving on.
+*/ 
+//Had issues with updating variables but this worked.
+Lokir trembles. “Oh gods—where are they taking us?”
+How do you handle him?
+
+- Calm him: “Breathe. Think of home.” <<link "Continue">>
+  <<set $lokir = "steadied">>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Lokir is steadied by your words.">>
+
+- Snap at him: “Shut it, you’ll get us all whipped.” <<link "Continue">>
+  <<set $lokir = "angry">>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Lokir is angry with you.">>
+
+- Ignore him. <<link "Continue">>
+  <<set $lokir = "panicked">>
+  <<goto "WagonsRoll">><</link>>
+    <<note "Lokir remains panicked.">>
+
+
+
+:: LokirPlan {"position":"1500,800","size":"100,100"}
+You lean toward Lokir: “If we move when they’re distracted—maybe we have a chance.”  
+
+He nods once, jaw set. For the first time, you feel like you’re not alone.  
+
+- [[Signal him to create a diversion->Bolt]]
+- [[Stay quiet, wait for your moment->Comply]]
+
+
+:: OnTheSquare {"position":"1300,600","size":"100,100"}
+You are marched to the square. The headsman waits, axe already slick from some poor soul before you. The air stinks of smoke and fear.  
+
+Depending on your earlier choices, the soldiers watch you with **varying interest**:
+
+<<if $allegiance === "imperial-leaning">>
+A centurion notes your composure with a raised brow, as if measuring whether you could be useful to the Legion.  
+<<note "Imperial-leaning: Centurion notices you.">>
+<</if>>
+
+<<if $allegiance === "stormcloak-leaning">>
+A trooper spits at your feet. “Another rebel sympathizer. Line them up!”  
+<<note "Stormcloak-leaning: Stormcloaks see you as kin, Imperials see you as a threat.">>
+<</if>>
+
+<<if $allegiance === "neutral">>
+You catch whispers—no one knows what to make of you. Neither ally, nor enemy.  
+<<note "Neutral: Both sides are uncertain about you.">>
+<</if>>
+
+Lokir stumbles beside you.  
+<<if $lokir === "steadied">>
+He whispers: “Stay calm. Maybe we’ll get through this.” For the first time, his voice steadies *you*.  
+<<note "Lokir is steadied: He supports you.">>
+<</if>>
+
+<<if $lokir === "angry">>
+He snarls, loud enough for soldiers to hear: “They’ll kill us anyway! Rebels, thieves—it doesn’t matter!”  
+A guard slams a fist into his gut, then eyes *you*.  
+<<note "Lokir is angry: His outburst puts you at risk.">>
+<</if>>
+
+<<if $lokir === "panicked">>
+He tugs against the chains, whimpering prayers. “Divines, no, please no—” The guards laugh, then glare at you as though you share his weakness.  
+<<note "Lokir is panicked: His panic makes you look weak.">>
+<</if>>
+
+The square stills as the roll of names continues. Your bindings chafe. A gap opens as soldiers re-form ranks.  
+
+**Do you…**
+
+- [[Keep your head down and comply->Comply]]  
+- <<if $allegiance === "stormcloak-leaning">>[[Defy the soldier openly->TalkBack]]<</if>>  
+- [[Test your luck and slip the ropes->AttemptEscape]]  
+- <<if $lokir === "steadied">>[[Whisper to Lokir, plot together->LokirPlan]]<</if>>
+
+
+
+:: Origin {"position":"1100,400","size":"100,100"}
+Ralof: “A Nord’s last thoughts should be of home.” Where are you from?
+
+- “Rorikstead.” <<link "Proceed to Square">>
+  <<set $origin = "Rorikstead">>
+  <<goto "OnTheSquare">><</link>>
+  <<note "Origin set: Rorikstead">>
+
+- “Riverwood.” <<link "Proceed to Square">>
+  <<set $origin = "Riverwood">>
+  <<goto "OnTheSquare">><</link>>
+  <<note "Origin set: Riverwood">>
+
+- “Nowhere that matters.” <<link "Proceed to Square">>
+  <<set $origin = "Nowhere">>
+  <<goto "OnTheSquare">><</link>>
+  <<note "Origin set: Nowhere">>
+
+
+
+:: OriginLie {"position":"1100,600","size":"100,100"}
+You fabricate a past as the quill scratches.
+
+- “Skingrad, in Cyrodiil.” <<link "Proceed to Square">>
+  <<set $origin = "Skingrad (lie)">>
+  <<goto "OnTheSquare">><</link>>
+  <<note "Origin set: Skingrad (lie)">>
+
+- “A sailor from Dawnstar.” <<link "Proceed to Square">>
+  <<set $origin = "Dawnstar (lie)">>
+  <<goto "OnTheSquare">><</link>>
+  <<note "Origin set: Dawnstar (lie)">>
+
+
+
+:: OriginSilent {"position":"1100,800","size":"100,100"}
+
+You set your jaw. The clerk frowns. “Very well. Put them on the list.”
+<<link "Proceed to Square">>
+  <<set $origin = "Refused">>
+  <<goto "OnTheSquare">><</link>>
+<<note "Origin set: Refused">>
+
+
+
+:: Prayer {"position":"700,800","size":"100,100"}
+/*
+<<link "Continue">> ... <</link>> lets you run macros after the click.
+<<set>> must be before <<goto>> (last in the block) so your state updates before moving on.
+*/ 
+//Had issues with updating variables but this worked.
+You lower your eyes and whisper. Who do you pray to?
+
+- Akatosh (patience & time). <<link "Rise">>
+  <<set $blessing = "akatosh">>
+  <<set $bonus = 2>>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Blessing: Akatosh (+2 to checks)">>
+
+- Kynareth (wind & the wilds). <<link "Rise">>
+  <<set $blessing = "kynareth">>
+  <<set $bonus = 1>>
+  <<goto "WagonsRoll">><</link>>
+  <<note "Blessing: Kynareth (+1 to checks)">>
+
+- “No one’s listening.” <<link "Rise">>
+  <<set $blessing = "none">>
+  <<set $bonus = 0>>
+  <<goto "WagonsRoll">><</link>>
+  <<note "No blessing (no bonus).">>
+
+
+
+:: SlipAway {"position":"1900,400","size":"100,100"}
+You edge toward a cart, free wrists hidden. A Thalmor agent’s gaze slides past—wind lifts the pennants.
+
+<<if $blessing === "kynareth">>
+A timely gust sends dust swirling. You vanish into it. [[EdgeOfTown]]
+<<else>>
+A shout—“You there!” Steel scrapes. [[Bolt]]
+<</if>>
+
+
+:: Start {"position":"500,600","size":"100,100"}
+[An Imperial wagon rattles down a snowy pass. You and three others sit bound. One—finely dressed—is gagged.]
+
+
+Ralof: “Hey, you. You’re finally awake… walked right into that Imperial ambush, same as us.”
+
+Lokir: “D**n you Stormcloaks… If they hadn’t been looking for you, I’d be halfway to Hammerfell.”
+
+Imperial Soldier: “Quiet back there!”
+
+You catch Lokir staring at the gagged man.
+
+Ralof (low): “Watch your tongue—that’s Ulfric Stormcloak.”
+
+This is Helgen’s road. The air bites. The ropes bite harder.
+
+**What do you do?**  
+- [[Answer Ralof->Allegiance]]  
+- [[Address Lokir->LokirChoice]]  
+- [[Keep your head down and pray|Prayer]]
+
+<<include "StoryCaption">>
+<img src="img/wagon.webp" alt="Prisoner wagon rolling through snowy mountains">
+
+
+:: StormcloakEscape {"position":"1800,1200","size":"100,100"}
+You scramble over rubble to Ralof. He hauls you up with a grin that doesn’t reach his eyes.
+
+“Stay close.”
+
+<<if $blessing === "akatosh">>
+Time seems to stretch; falling stones miss by heartbeats.
+<</if>>
+
+Your path with the Stormcloaks begins.
+
+<<include "Epilogue">>
+
+
+:: StoryCaption {"position":"1000,200","size":"100,100"}
+<span class="caption">A cold wind and the clatter of wheels. Your hands are bound.</span>
+
+
+
+:: StoryInit {"position":"800,200","size":"100,100"}
+<<widget "note">><span class="caption">(<<= _args.join("")>>)</span><</widget>>
+
+<<set $allegiance = "neutral">>
+<<set $lokir = "panicked">>
+<<set $blessing = "none">>
+<<set $bonus = 0>>
+<<set $origin = "unknown">>
+<<set $bindings = "tight">>
+<<set $attempt = "none">>
+
+
+
+:: StoryTitle {"position":"600,200","size":"100,100"}
+Bound for Helgen
+
+
+:: TalkBack {"position":"1500,600","size":"100,100"}
+You lift your chin. “This isn’t justice.”
+
+The nearest soldier steps in. “It’s order.”
+
+<<if $allegiance === "imperial-leaning">>
+Your tone is measured; he hesitates, then shoves you into line. “Don’t make it worse.” [[Comply]]
+<</if>>
+<<if $allegiance === "stormcloak-leaning">>
+Your words draw glares. The shove is a blow. You take 1 harm (pride). [[Comply]]
+<</if>>
+<<if $allegiance === "neutral">>
+He snorts. “Save your breath.” [[Comply]]
+<</if>>
+
+
+:: WagonsRoll {"position":"900,600","size":"100,100"}
+The wagons crest a ridge—Helgen’s walls and towers loom ahead.
+
+Ralof: “This is Helgen… Funny—Imperial walls used to make me feel safe.”
+
+A soldier shouts: “General Tullius, sir! The headsman is waiting!”
+
+General Tullius rides by, Thalmor in tow. Lokir mutters a litany of Divines.
+
+A bored trooper eyes your bindings.
+
+Before the gate, a clerk starts **taking names**. You will have to speak.
+
+- [[State your origin truthfully->Origin]]
+- [[Lie about your origin->OriginLie]]
+- [[Say nothing->OriginSilent]]
+
+
+:: StoryStylesheet [stylesheet]
+/* === Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* === Theme variables === */
+:root{
+  --bg-image: none;                       /* default, overridden per passage */
+  --bg-fallback: linear-gradient(180deg,#0f172a 0%,#1f2937 35%,#334155 100%);
+  --ink: #0f172a;
+  --ink-soft:#334155;
+  --paper: rgba(250,243,224,.92);         /* translucent parchment */
+  --paper-border:#e2d3b7;
+  --paper-shadow: 0 10px 30px rgba(0,0,0,.35);
+  --accent:#1f2937;
+  --accent-2:#0b1220;
+  --caption:#64748b;
+}
+
+/* === Page background with overlay === */
+html, body {
+  height: 100%;
+  color: #f1f5f9;
+  font-family: "Lora", serif;
+  background: var(--bg-fallback);
+  overflow-x: hidden;
+}
+
+/* background image layer */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--bg-image) no-repeat center center fixed, var(--bg-fallback);
+  background-size: cover;
+}
+
+/* readability overlay */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0,0,0,.45);
+}
+
+/* === Layout container === */
+#passages{
+  max-width: 820px;
+  margin: clamp(2rem, 6vh, 4rem) auto;
+  padding: 0 1rem 3rem;
+}
+
+/* === Passage card (parchment) === */
+.passage{
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--paper-shadow);
+  border: 1px solid var(--paper-border);
+  backdrop-filter: blur(2px);
+}
+
+/* Headings inside passages */
+.passage h1, .passage h2, .passage h3{
+  font-family: "Cinzel", serif;
+  letter-spacing:.03em;
+  color: var(--accent-2);
+  margin: .25rem 0 .75rem;
+}
+
+/* Paragraph rhythm */
+.passage p{ line-height: 1.6; margin: .6rem 0; }
+
+/* Lists spacing */
+.passage ul, .passage ol{ margin: .75rem 0 .75rem 1.25rem; }
+
+/* Title (at top UI) */
+#story-title{
+  font-family: "Cinzel", serif;
+  letter-spacing:.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 1.25rem;
+}
+
+/* === Links (“runes”) === */
+a.link-internal, .link-internal{
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: transform .12s ease, border-color .12s ease, outline-color .12s ease;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+a.link-internal:hover{
+  border-bottom-color: var(--accent);
+  transform: translateY(-1px);
+}
+a.link-internal:focus-visible{
+  outline-color: #94a3b8; /* slate-300 */
+  border-bottom-color: #94a3b8;
+}
+
+/* Buttons (if you add any) */
+button{
+  border-radius: .75rem;
+  border: 1px solid #e5e7eb;
+  padding: .45rem .8rem;
+  font-weight:600;
+  background:#f8fafc;
+  color:#0f172a;
+  cursor:pointer;
+}
+button:hover{ filter: brightness(0.98); }
+
+/* Caption / notes (your <<note>> widget uses .caption) */
+.caption{ color: var(--caption); font-style: italic; font-size:.95rem; }
+
+/* UI bar polish */
+#ui-bar{
+  background: rgba(15,23,42,.75);
+  backdrop-filter: blur(6px);
+}
+#ui-bar .story{ font-family:"Cinzel", serif; }
+
+/* === Per-passage backgrounds using CSS variable === */
+/* Default: just gradient (already set). Override per passage: */
+body[data-passage="Start"]{
+  --bg-image: url("img/wagon.webp");
+}
+body[data-passage="DragonCry"]{
+  --bg-image: url("img/dragoncry.jpg");
+}
+
+/* === Inline images inside passages === */
+.passage img{
+  display:block;
+  max-width:100%;
+  max-height:240px;   /* keeps it from being overwhelming */
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  border-radius:.75rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  margin:.75rem 0 1rem;
+}
+
+/* === Small screens === */
+@media (max-width: 640px){
+  #passages{ padding: 0 .75rem 2.5rem; }
+  .passage{ padding: 1rem 1rem; }
+  #story-title{ font-size: 1.1rem; }
+}
+
+/* === Respect reduced motion === */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; }
+}
